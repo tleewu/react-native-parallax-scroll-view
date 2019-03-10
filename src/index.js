@@ -371,10 +371,17 @@ class ParallaxScrollView extends Component {
 	}) {
 		const { viewWidth } = this.state
 		const { scrollY } = this
+
+		const translateY = interpolate(scrollY, {
+			inputRange: [0, stickyHeaderHeight],
+			outputRange: [-stickyHeaderHeight, 0],
+			extrapolate: 'clamp'
+		})
+
 		if (renderStickyHeader || renderFixedHeader) {
 			const p = pivotPoint(parallaxHeaderHeight, stickyHeaderHeight)
 			return (
-				<View
+				<Animated.View
 					style={[
 						styles.stickyHeader,
 						{
@@ -388,6 +395,7 @@ class ParallaxScrollView extends Component {
 							style={{
 								backgroundColor: backgroundColor,
 								height: stickyHeaderHeight,
+								transform: [{ translateY }],
 								opacity: interpolate(scrollY, {
 									inputRange: [0, p],
 									outputRange: [0, 1],
@@ -413,7 +421,7 @@ class ParallaxScrollView extends Component {
 						</Animated.View>
 						: null}
 					{renderFixedHeader && renderFixedHeader()}
-				</View>
+				</Animated.View>
 			)
 		} else {
 			return null
